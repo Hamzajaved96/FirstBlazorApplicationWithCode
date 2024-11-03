@@ -25,11 +25,11 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish Application
-      run: dotnet publish --configuration Release --output ./publish
+      run: dotnet publish --configuration Release --output .\myapp
 
     - name: Deploy to Local IIS
       run: |
         # Specify the path to your IIS site
         $iisSitePath = "C:\inetpub\wwwroot\IISDeployments\MVC1" 
         Remove-Item "$iisSitePath\*" -Recurse -Force # Clear existing files
-        Copy-Item -Path ./publish/* -Destination $iisSitePath -Recurse
+        Copy-Item -Path .\myapp\* -Destination $iisSitePath -Recurse
