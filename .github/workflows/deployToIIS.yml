@@ -1,0 +1,35 @@
+name: CI/CD Pipeline for .NET 8 Application
+
+on:
+  push:
+    branches:
+      - main # Change to your default branch if different
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET 8 SDK
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Application
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish Application
+      run: dotnet publish --configuration Release --output ./publish
+
+    - name: Deploy to Local IIS
+      run: |
+        # Specify the path to your IIS site
+        $iisSitePath = "C:\inetpub\wwwroot\IISDeployments\MVC1" 
+        Remove-Item "$iisSitePath\*" -Recurse -Force # Clear existing files
+        Copy-Item -Path ./publish/* -Destination $iisSitePath -Recurse
